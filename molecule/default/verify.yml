@@ -1,0 +1,21 @@
+---
+# This is an example playbook to execute Ansible tests.
+# this is also not being used, as I am using the testinfra verifier, and py-test
+- name: Verify
+  hosts: all
+  #gather_facts: false
+  vars:
+    expected_content: '6'
+  tasks:
+  - name: add sample file 
+    command: |
+           echo -e "01203kljdsfkjl9i4j" >> sample.txt
+  - name: Get the version 
+    command: rngtest --version
+    register: hello
+  - name: Check that rngtest is on version 6.13 
+    assert:
+      that: hello.stdout_lines[0] == 'rngtest 6.13'
+
+      #  - debug: msg="{{ hello.stdout_lines[0]}}"
+      #- debug: msg="{{ hello }}"    

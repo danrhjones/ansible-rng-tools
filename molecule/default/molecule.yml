@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+ - name: centos
+   image: geerlingguy/docker-centos8-ansible
+   pre_build_image: true
+   command: ${MOLECULE_DOCKER_COMMAND:-"/usr/sbin/init"}
+   volumes:
+     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+   privileged: true
+scenario:
+   test_sequence:
+     - destroy
+     - create
+     - converge
+     # - idempotence
+     - lint
+     - verify
+provisioner:
+   name: ansible
+verifier:
+   name: testinfra
+   options:
+           s: true      
+lint: |
+   set -e
+   yamllint .
+   ansible-lint .
+   flake8

@@ -1,0 +1,25 @@
+---
+- name: "Install rng tools"
+  package:
+    name: "rng-tools"
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == "8"
+
+- name: Ensure rngd config
+  lineinfile: dest=/usr/lib/systemd/system/rngd.service regexp=^ExecStart= line='ExecStart=/usr/sbin/rngd -f --fill-watermark=0'
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == "8"
+  notify:
+    - Restart rngd
+
+- name: Start rngd
+  service:
+    name: rngd
+    state: started
+    enabled: yes
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == "8"

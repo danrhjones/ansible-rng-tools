@@ -1,0 +1,5 @@
+---
+- name: Restart rngd
+  service:
+    name: rngd
+    state: restarted
